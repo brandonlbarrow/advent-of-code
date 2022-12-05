@@ -14,6 +14,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	defer f.Close()
 	contents, err := io.ReadAll(f)
 	if err != nil {
 		fmt.Println(err)
