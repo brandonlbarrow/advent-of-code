@@ -9,12 +9,13 @@ import (
 )
 
 func main() {
-	m, err := os.Open("input")
+	f, err := os.Open("input")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	contents, err := io.ReadAll(m)
+	defer f.Close()
+	contents, err := io.ReadAll(f)
 	if err != nil {
 		fmt.Println(err)
 		return
