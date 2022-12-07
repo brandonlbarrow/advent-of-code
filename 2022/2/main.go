@@ -27,6 +27,16 @@ var (
 		"Y": paper,
 		"Z": scissors,
 	}
+	getWinDecision = map[string]int{
+		"X": LOSS,
+		"Y": DRAW,
+		"Z": WIN,
+	}
+	winDecisionString = map[int]string{
+		WIN:  "WIN",
+		LOSS: "LOSS",
+		DRAW: "DRAW",
+	}
 )
 
 type Symbol string
@@ -58,7 +68,23 @@ func main() {
 		fmt.Println("current total score:", playerScore)
 		playerScore += currentScore
 	}
-	fmt.Println(playerScore)
+	fmt.Println("player score round 1:", playerScore)
+	playerScore = 0
+
+	for _, x := range parsedInput {
+		y := strings.Split(x, " ")
+		if len(y) != 2 {
+			log.Fatal(err)
+		}
+		opponentInput := y[0]
+		playerInput := y[1]
+		fmt.Printf("playing round 2, opponent plays %s, must have outcome %s\n", getSymbol[opponentInput], winDecisionString[getWinDecision[playerInput]])
+		currentScore := playRoundForOutcome(opponentInput, playerInput)
+		fmt.Println("score was:", currentScore)
+		fmt.Println("current total score:", playerScore)
+		playerScore += currentScore
+	}
+	fmt.Println("player score round 2:", playerScore)
 
 }
 
@@ -90,6 +116,39 @@ func playRound(opponentInput, playerInput string) int {
 			return LOSS + getPoints[paper]
 		case scissors:
 			return DRAW + getPoints[scissors]
+		}
+	}
+	return 0
+}
+
+func playRoundForOutcome(opponentInput, desiredOutcome string) int {
+	switch getSymbol[opponentInput] {
+	case rock:
+		switch getWinDecision[desiredOutcome] {
+		case LOSS:
+			return LOSS + getPoints[scissors]
+		case WIN:
+			return WIN + getPoints[paper]
+		case DRAW:
+			return DRAW + getPoints[rock]
+		}
+	case paper:
+		switch getWinDecision[desiredOutcome] {
+		case LOSS:
+			return LOSS + getPoints[rock]
+		case DRAW:
+			return DRAW + getPoints[paper]
+		case WIN:
+			return WIN + getPoints[scissors]
+		}
+	case scissors:
+		switch getWinDecision[desiredOutcome] {
+		case LOSS:
+			return LOSS + getPoints[paper]
+		case DRAW:
+			return DRAW + getPoints[scissors]
+		case WIN:
+			return WIN + getPoints[rock]
 		}
 	}
 	return 0
